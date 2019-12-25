@@ -1,8 +1,8 @@
-package dataStructure;
+package main.java.dataStructure;
 
 import java.util.Collection;
 
-public class DGraph implements graph{
+public class DGraph implements graph {
 
 	@Override
 	public node_data getNode(int key) {

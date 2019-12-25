@@ -1,4 +1,5 @@
-package dataStructure;
+package main.java.dataStructure;
+
 import java.util.Collection;
 /**
  * This interface represents a directional weighted graph.
