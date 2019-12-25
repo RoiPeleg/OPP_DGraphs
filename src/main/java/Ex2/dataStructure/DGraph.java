@@ -1,4 +1,4 @@
-package main.java.dataStructure;
+package main.java.Ex2.dataStructure;
 
 import java.util.Collection;
 

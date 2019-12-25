@@ -1,4 +1,4 @@
-package main.java.dataStructure;
+package main.java.Ex2.dataStructure;
 /**
  * This interface represents the set of operations applicable on a 
  * directional edge(src,dest) in a (directional) weighted graph.

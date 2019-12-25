@@ -1,9 +1,9 @@
-package main.java.algorithms;
+package main.java.Ex2.algorithms;
 
 import java.util.List;
 
-import main.java.dataStructure.graph;
-import main.java.dataStructure.node_data;
+import main.java.Ex2.dataStructure.graph;
+import main.java.Ex2.dataStructure.node_data;
 /**
  * This empty class represents the set of graph-theory algorithms
  * which should be implemented as part of Ex2 - Do edit this class.
