@@ -1,73 +1,78 @@
 package main.java.Ex2.dataStructure;
 
 import java.util.Collection;
+import java.util.HashMap;
 
 public class DGraph implements graph {
-
+    private HashMap<Integer , node_data> hashMap;
+    private int MC;
+    public DGraph()
+    {
+        hashMap = new HashMap<>();
+        MC =0;
+    }
 	@Override
 	public node_data getNode(int key) {
-		// TODO Auto-generated method stub
-		return null;
+		return (node_data) hashMap.get(key);
 	}
 
 	@Override
 	public edge_data getEdge(int src, int dest) {
-		// TODO Auto-generated method stub
-		return null;
+            Node n =(Node)(hashMap.get(src));
+		return n.getEdge(dest);
 	}
 
 	@Override
 	public void addNode(node_data n) {
-		// TODO Auto-generated method stub
-		
+        hashMap.put(n.getKey(),n);
+        MC++;
 	}
 
 	@Override
 	public void connect(int src, int dest, double w) {
-		// TODO Auto-generated method stub
-		
+    	Edge e = new Edge(src,dest,w);
+    	Node n = (Node)hashMap.get(src);
+    	n.addEdge(e);
+    	MC++;
 	}
 
 	@Override
 	public Collection<node_data> getV() {
-		// TODO Auto-generated method stub
-		return null;
+		return (Collection<node_data>) hashMap;
 	}
 
 	@Override
 	public Collection<edge_data> getE(int node_id) {
-		// TODO Auto-generated method stub
-		return null;
+		Node node = (Node) hashMap.get(node_id);
+		return (Collection<edge_data>) node.getEdges();
 	}
 
 	@Override
 	public node_data removeNode(int key) {
-		// TODO Auto-generated method stub
-		return null;
+		MC++;
+		return hashMap.remove(key);
 	}
 
 	@Override
 	public edge_data removeEdge(int src, int dest) {
-		// TODO Auto-generated method stub
-		return null;
+    	Node n = (Node)hashMap.get(src);
+    	MC++;
+		return n.removeEdge(dest);
 	}
 
 	@Override
 	public int nodeSize() {
-		// TODO Auto-generated method stub
-		return 0;
+        return hashMap.size();
 	}
 
 	@Override
 	public int edgeSize() {
-		// TODO Auto-generated method stub
-		return 0;
+        return Node.getNumofEdges();
 	}
 
 	@Override
 	public int getMC() {
-		// TODO Auto-generated method stub
-		return 0;
+		return MC;
 	}
 
 }
