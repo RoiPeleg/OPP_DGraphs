@@ -1,4 +1,4 @@
-package main.java.Ex2.dataStructure;
+package dataStructure;
 
 public class Edge implements edge_data {
     private int src;

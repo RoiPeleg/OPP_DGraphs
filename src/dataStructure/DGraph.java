@@ -1,9 +1,10 @@
-package main.java.Ex2.dataStructure;
+package dataStructure;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-public class DGraph implements graph {
+public class DGraph implements graph{
     private HashMap<Integer , node_data> hashMap;
     private int MC;
     public DGraph()
@@ -38,13 +39,15 @@ public class DGraph implements graph {
 
 	@Override
 	public Collection<node_data> getV() {
-		return (Collection<node_data>) hashMap;
+		ArrayList<node_data> list = new ArrayList<node_data>(hashMap.values());
+		return (Collection<node_data>) list;
 	}
 
 	@Override
 	public Collection<edge_data> getE(int node_id) {
 		Node node = (Node) hashMap.get(node_id);
-		return (Collection<edge_data>) node.getEdges();
+		ArrayList<edge_data> list = new ArrayList<edge_data>(node.getEdges().values());
+		return (Collection<edge_data>)list;
 	}
 
 	@Override

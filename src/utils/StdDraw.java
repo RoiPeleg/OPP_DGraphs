@@ -1,4 +1,4 @@
-package main.java.Ex2.utils;
+package utils;
 
 //package stdDraw;
 // https://introcs.cs.princeton.edu/java/stdlib/StdDraw.java.html
@@ -27,6 +27,8 @@ package main.java.Ex2.utils;
  *
  ******************************************************************************/
 
+import dataStructure.DGraph;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FileDialog;
@@ -36,7 +38,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.RenderingHints;
-import java.awt.Toolkit;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -57,8 +58,10 @@ import java.awt.image.DirectColorModel;
 import java.awt.image.WritableRaster;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
+import java.io.ObjectOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -73,7 +76,6 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
 
 /**
  *  The {@code StdDraw} class provides a basic capability for
@@ -479,6 +481,7 @@ import javax.swing.KeyStroke;
  *  @author Kevin Wayne
  */
 public final class StdDraw implements ActionListener, MouseListener, MouseMotionListener, KeyListener {
+	private DGraph graph;
 
 	/**
 	 *  The color black.
@@ -705,7 +708,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);            // closes all windows
 		// frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);      // closes only current window
-		frame.setTitle("Standard Draw");
+		frame.setTitle("Graph paths");
 		frame.setJMenuBar(createMenuBar());
 		frame.pack();
 		frame.requestFocusInWindow();
@@ -719,9 +722,20 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		menuBar.add(menu);
 		JMenuItem menuItem1 = new JMenuItem(" Save...   ");
 		menuItem1.addActionListener(std);
-		menuItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		//menuItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		menu.add(menuItem1);
+		JMenuItem menuItem2 = new JMenuItem(" Load...   ");
+		menuItem2.addActionListener(std);
+		//menuItem2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		menu.add(menuItem2);
+		JMenu Algo = new JMenu("Algo");
+		menuBar.add(Algo);
+		JMenuItem menuItem3 = new JMenuItem("TSP");
+		menuItem3.addActionListener(std);
+		Algo.add(menuItem3);
+		JMenuItem menuItem4 = new JMenuItem("shortest path");
+		menuItem4.addActionListener(std);
+        Algo.add(menuItem4);
 		return menuBar;
 	}
 
@@ -1653,13 +1667,26 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	 * This method cannot be called directly.
 	 */
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		FileDialog chooser = new FileDialog(StdDraw.frame, "Use a .png or .jpg extension", FileDialog.SAVE);
-		chooser.setVisible(true);
-		String filename = chooser.getFile();
-		if (filename != null) {
-			StdDraw.save(chooser.getDirectory() + File.separator + chooser.getFile());
-		}
+	public void actionPerformed(ActionEvent e){
+        System.out.println(e.getActionCommand());
+        if(e.getActionCommand() == "Save") {
+            FileDialog chooser = new FileDialog(StdDraw.frame, "Use a .png or .jpg extension", FileDialog.SAVE);
+            chooser.setVisible(true);
+            String filename = chooser.getFile();
+            if (filename != null) {
+                try {
+                    FileOutputStream fout = new FileOutputStream(filename);
+                    ObjectOutputStream oos = new ObjectOutputStream(fout);
+                    oos.writeObject(graph);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        else if(e.getActionCommand() == "Load")
+        {
+
+        }
 	}
 
 

@@ -1,4 +1,4 @@
-package main.java.Ex2.utils;
+package utils;
 /**
  * This class represents a simple 1D range of shape [min,max]
  * @author boaz_benmoshe

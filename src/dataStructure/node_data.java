@@ -1,6 +1,6 @@
-package main.java.Ex2.dataStructure;
+package dataStructure;
 
-import main.java.Ex2.utils.Point3D;
+import utils.Point3D;
 /**
  * This interface represents the set of operations applicable on a 
  * node (vertex) in a (directional) weighted graph.

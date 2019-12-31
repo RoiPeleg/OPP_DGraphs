@@ -1,6 +1,6 @@
-package main.java.Ex2.dataStructure;
+package dataStructure;
 
-import main.java.Ex2.utils.Point3D;
+import utils.Point3D;
 
 import java.util.HashMap;
 
@@ -12,12 +12,13 @@ public class Node implements node_data {
     private String info;
     private int tag;
     public Node() {;}
+    private HashMap<Integer,edge_data> edgeMap;
     public Node(int key,Point3D p,double weight)
     {
         this.key = key;
         this.p = new Point3D(p);
+        edgeMap =new HashMap<>();
     }
-    private HashMap<Integer,edge_data> edgeMap;
     public static int getNumofEdges()
     {
         return numofEdges;
