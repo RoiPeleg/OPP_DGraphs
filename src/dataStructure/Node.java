@@ -2,9 +2,10 @@ package dataStructure;
 
 import utils.Point3D;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class Node implements node_data {
+public class Node implements node_data, Serializable {
     private static int numofEdges;
     private int key;
     private Point3D p;

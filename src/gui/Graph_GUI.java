@@ -1,9 +1,13 @@
 package gui;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-import dataStructure.*;
+
+import dataStructure.DGraph;
+import dataStructure.Node;
+import dataStructure.edge_data;
+import dataStructure.node_data;
 import utils.Point3D;
 import utils.Range;
 import utils.StdDraw;
+
 import java.awt.*;
 import java.io.*;
 import java.util.Collection;
@@ -19,8 +23,9 @@ public class Graph_GUI {
      * @throws IOException
      */
     public static void save(String filename) throws IOException {
-        FileOutputStream out = new FileOutputStream(filename);
+        FileOutputStream out = new FileOutputStream(filename+".ser");
         ObjectOutputStream oos = new ObjectOutputStream(out);
+        if(lastGraph == null)return;
         oos.writeObject(lastGraph);
         oos.close();
         out.close();
@@ -120,6 +125,7 @@ public class Graph_GUI {
                 StdDraw.text((dest.x()+src.x())/2,(dest.y()+src.y())/2,String.format("%.2f", w));
             }
         }
+        lastGraph = graph;
     }
 
     public static void main(String[] args) {

@@ -1,10 +1,13 @@
 package dataStructure;
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-public class DGraph implements graph{
+public class DGraph implements graph, Serializable {
     private HashMap<Integer , node_data> hashMap;
     private int MC;
     public DGraph()
@@ -77,5 +80,13 @@ public class DGraph implements graph{
 	public int getMC() {
 		return MC;
 	}
-
+	public void save(String filename)
+    {
+        try {
+            FileOutputStream out = new FileOutputStream(filename);
+            ObjectOutputStream oos = new ObjectOutputStream(out);
+            oos.writeObject(this.hashMap);
+            oos.writeObject(this.MC);
+        }catch (Exception e){e.printStackTrace();}
+    }
 }
