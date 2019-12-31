@@ -1,15 +1,47 @@
 package gui;
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import dataStructure.*;
 import utils.Point3D;
 import utils.Range;
 import utils.StdDraw;
-
 import java.awt.*;
+import java.io.*;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
 
 public class Graph_GUI {
+    private static DGraph lastGraph;
+
+    /**
+     * saves last graph to a given file
+     * @param filename
+     * @throws IOException
+     */
+    public static void save(String filename) throws IOException {
+        FileOutputStream out = new FileOutputStream(filename);
+        ObjectOutputStream oos = new ObjectOutputStream(out);
+        oos.writeObject(lastGraph);
+        oos.close();
+        out.close();
+    }
+
+    /**
+     * loads and draws from given file
+     * @param filename
+     * @throws Exception
+     */
+    public static void load(String filename)throws Exception {
+        FileInputStream streamIn = new FileInputStream(filename);
+        ObjectInputStream obj = new ObjectInputStream(streamIn);
+        DGraph readCase = (DGraph) obj.readObject();
+        StdDraw.clear();
+        draw(readCase);
+        lastGraph = readCase;
+        streamIn.close();
+        obj.close();
+    }
+    //auxiliary to find scale
     private static void setScale(DGraph graph)
     {
         Collection<node_data> c = graph.getV();

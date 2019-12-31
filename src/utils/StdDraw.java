@@ -27,7 +27,9 @@ package utils;
  *
  ******************************************************************************/
 
-import dataStructure.DGraph;
+
+
+import gui.Graph_GUI;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -481,7 +483,7 @@ import javax.swing.JMenuItem;
  *  @author Kevin Wayne
  */
 public final class StdDraw implements ActionListener, MouseListener, MouseMotionListener, KeyListener {
-	private DGraph graph;
+
 
 	/**
 	 *  The color black.
@@ -1667,27 +1669,25 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	 * This method cannot be called directly.
 	 */
 	@Override
-	public void actionPerformed(ActionEvent e){
-        System.out.println(e.getActionCommand());
-        if(e.getActionCommand() == "Save") {
-            FileDialog chooser = new FileDialog(StdDraw.frame, "Use a .png or .jpg extension", FileDialog.SAVE);
-            chooser.setVisible(true);
-            String filename = chooser.getFile();
-            if (filename != null) {
-                try {
-                    FileOutputStream fout = new FileOutputStream(filename);
-                    ObjectOutputStream oos = new ObjectOutputStream(fout);
-                    oos.writeObject(graph);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
-        else if(e.getActionCommand() == "Load")
-        {
-
-        }
+	public void actionPerformed(ActionEvent e) {
+		System.out.println(e.getActionCommand());
+		if (e.getActionCommand().contains("Save")) {
+			FileDialog chooser = new FileDialog(StdDraw.frame, "Use a .png or .jpg extension", FileDialog.SAVE);
+			chooser.setVisible(true);
+			String filename = chooser.getFile();
+			try {
+				Graph_GUI.save(filename);
+			}catch (Exception ex){ex.printStackTrace();}
+		} else if (e.getActionCommand().contains("Load")) {
+			FileDialog chooser = new FileDialog(StdDraw.frame, "Use a .png or .jpg extension", FileDialog.LOAD);
+			chooser.setVisible(true);
+			String filename = chooser.getFile();
+			try {
+				Graph_GUI.load(filename);
+			}catch (Exception ex){ex.printStackTrace();}
+		}
 	}
+
 
 
 	/***************************************************************************
