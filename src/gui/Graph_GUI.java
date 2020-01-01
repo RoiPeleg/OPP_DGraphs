@@ -1,6 +1,5 @@
 package gui;
 
-import algorithms.Graph_Algo;
 import dataStructure.DGraph;
 import dataStructure.Node;
 import dataStructure.edge_data;
@@ -132,21 +131,25 @@ public class Graph_GUI {
     public static void main(String[] args) {
         Random random = new Random();
         DGraph graph = new DGraph();
-        int nodes = 7;
-        for (int i = 0; i <nodes ; i++) {
+        long startTime = System.nanoTime();
+        for (int i = 0; i <1000000 ; i++) {
             node_data n= new Node(i,new Point3D(-100 + random.nextDouble()*100,-100 + random.nextDouble()*100),1 + random.nextDouble()*10);
             graph.addNode(n);
         }
-        for (int i = 0; i < 11; i++) {
-            int src =  random.nextInt(nodes);
-            int dest =  random.nextInt(nodes);
+        for (int i = 0; i < 15; i++) {
+            int src =  random.nextInt(10);
+            int dest =  random.nextInt(10);
             while (dest==src)
             {
-                src =  random.nextInt(nodes);
-                dest =  random.nextInt(nodes);
+                src =  random.nextInt(10);
+                dest =  random.nextInt(10);
             }
             graph.connect(src, dest,1 + random.nextDouble()*10);
         }
+        long endTime = System.nanoTime();
+        double runtime =(double) endTime - startTime;
+        System.out.println(runtime/1000000000.0);//takes about 1.5 seconds
+        //draw(graph);
         draw(graph);
         Graph_Algo ga = new Graph_Algo(graph);
         ga.shortestPath(1,5);
