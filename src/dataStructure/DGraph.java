@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 public class DGraph implements graph, Serializable {
     private HashMap<Integer , node_data> hashMap;
@@ -15,6 +16,19 @@ public class DGraph implements graph, Serializable {
         hashMap = new HashMap<>();
         MC =0;
     }
+
+	public DGraph(DGraph dg)
+	{
+		HashMap<Integer, node_data> original = dg.hashMap;
+		HashMap<Integer, node_data> copy = new HashMap<Integer, node_data>();
+		for (Map.Entry<Integer, node_data> entry : original.entrySet())
+		{
+			copy.put(entry.getKey(), new Node((Node)entry.getValue()));
+		}
+		this.hashMap = copy;
+		this.MC = dg.MC;
+	}
+
 	@Override
 	public node_data getNode(int key) {
 		return (node_data) hashMap.get(key);
@@ -42,15 +56,15 @@ public class DGraph implements graph, Serializable {
 
 	@Override
 	public Collection<node_data> getV() {
-		ArrayList<node_data> list = new ArrayList<node_data>(hashMap.values());
-		return (Collection<node_data>) list;
+		Collection<node_data> list = new ArrayList<node_data>(hashMap.values());
+		return list;
 	}
 
 	@Override
 	public Collection<edge_data> getE(int node_id) {
 		Node node = (Node) hashMap.get(node_id);
-		ArrayList<edge_data> list = new ArrayList<edge_data>(node.getEdges().values());
-		return (Collection<edge_data>)list;
+		Collection<edge_data> list = new ArrayList<edge_data>(node.getEdges().values());
+		return list;
 	}
 
 	@Override
@@ -89,4 +103,5 @@ public class DGraph implements graph, Serializable {
             oos.writeObject(this.MC);
         }catch (Exception e){e.printStackTrace();}
     }
+
 }

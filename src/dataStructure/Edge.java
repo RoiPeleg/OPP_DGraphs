@@ -15,6 +15,13 @@ public class Edge implements edge_data, Serializable {
         this.weight = weight;
     }
 
+    public Edge(Edge e)
+    {
+        this.src = e.src;
+        this.dest = e.dest;
+        this.weight = e.weight;
+    }
+
     @Override
     public int getSrc() {
         return src;

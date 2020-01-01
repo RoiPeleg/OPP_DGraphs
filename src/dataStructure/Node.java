@@ -3,7 +3,9 @@ package dataStructure;
 import utils.Point3D;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Node implements node_data, Serializable {
     private static int numofEdges;
@@ -31,6 +33,17 @@ public class Node implements node_data, Serializable {
     public void addEdge(Edge e) {
         edgeMap.put(e.getDest(),e);
         numofEdges++;
+    }
+
+    public Node(Node n){
+        this.key = n.key;
+        this.p = new Point3D(n.p.x(),n.p.y());
+        this.info = n.info;
+        this.edgeMap = new HashMap<Integer,edge_data>();
+        for (Map.Entry<Integer, edge_data> entry : n.edgeMap.entrySet())
+        {
+            this.edgeMap.put(entry.getKey(), new Edge((Edge)entry.getValue()));
+        }
     }
 
     public HashMap<Integer, edge_data> getEdges() {
@@ -76,6 +89,7 @@ public class Node implements node_data, Serializable {
     public int getTag() {
         return tag;
     }
+
 
     @Override
     public void setTag(int t) {
