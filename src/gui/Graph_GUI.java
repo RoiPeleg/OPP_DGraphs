@@ -1,9 +1,7 @@
 package gui;
 
-import dataStructure.DGraph;
-import dataStructure.Node;
-import dataStructure.edge_data;
-import dataStructure.node_data;
+import algorithms.Graph_Algo;
+import dataStructure.*;
 import utils.Point3D;
 import utils.Range;
 import utils.StdDraw;
@@ -88,10 +86,11 @@ public class Graph_GUI {
     }
     /**
      * draws given graph in GUI
-     * @param graph
+     * @param graph1
      */
-    public static void draw(DGraph graph)
+    public static void draw(graph graph1)
     {
+        DGraph graph = (DGraph)graph1;
         StdDraw.setCanvasSize(600, 600);
         setScale(graph);
         Collection<node_data> c = graph.getV();
@@ -119,9 +118,9 @@ public class Graph_GUI {
                 Point3D dest = graph.getNode(ed.getDest()).getLocation();
                 double w = ed.getWeight() ;
                 StdDraw.setPenColor(Color.yellow);
-                StdDraw.line(src.x(), src.y(),dest.x()-1,dest.y()-1);
+                StdDraw.line(src.x(), src.y(),dest.x(),dest.y());
                 StdDraw.setPenColor(Color.black);
-                StdDraw.square(dest.x()-1,dest.y()-1,0.5);
+                StdDraw.square(src.x()+(dest.x()-src.x())*0.95,src.y()+(dest.y()-src.y())*0.95,0.5);
                 StdDraw.text((dest.x()+src.x())/2,(dest.y()+src.y())/2,String.format("%.2f", w));
             }
         }
@@ -132,24 +131,24 @@ public class Graph_GUI {
         Random random = new Random();
         DGraph graph = new DGraph();
         long startTime = System.nanoTime();
-        for (int i = 0; i <1000000 ; i++) {
+        int nodes = 7;
+        for (int i = 0; i <nodes ; i++) {
             node_data n= new Node(i,new Point3D(-100 + random.nextDouble()*100,-100 + random.nextDouble()*100),1 + random.nextDouble()*10);
             graph.addNode(n);
         }
-        for (int i = 0; i < 15; i++) {
-            int src =  random.nextInt(10);
-            int dest =  random.nextInt(10);
+        for (int i = 0; i < 10; i++) {
+            int src =  random.nextInt(nodes);
+            int dest =  random.nextInt(nodes);
             while (dest==src)
             {
-                src =  random.nextInt(10);
-                dest =  random.nextInt(10);
+                src =  random.nextInt(nodes);
+                dest =  random.nextInt(nodes);
             }
             graph.connect(src, dest,1 + random.nextDouble()*10);
         }
         long endTime = System.nanoTime();
         double runtime =(double) endTime - startTime;
-        System.out.println(runtime/1000000000.0);//takes about 1.5 seconds
-        //draw(graph);
+        System.out.println(runtime/1000000000.0);//takes about 1.5 seconds for 1000000 nodes and 10000000 edges
         draw(graph);
         Graph_Algo ga = new Graph_Algo(graph);
         ga.shortestPath(1,5);
