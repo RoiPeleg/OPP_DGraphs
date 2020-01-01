@@ -2,6 +2,7 @@ package Tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,13 +43,13 @@ class Ex2Test {
         //_alg = new Graph_Algo(_graph);
         boolean con = _alg.isConnected();
         if(!con) {
-            fail("shoulbe be connected");
+            Assertions.fail("shoulbe be connected");
         }
     }
     @Test
     void testgraph() {
         boolean ans = drawGraph(_graph);
-        assertTrue(ans);
+        Assertions.assertTrue(ans);
     }
 
     private static graph tinyGraph() {
@@ -56,9 +57,8 @@ class Ex2Test {
         return ans;
     }
     boolean drawGraph(graph g) {
-        // YOUR GUI graph draw
+        Graph_GUI.draw(g);
         return true;
-
     }
 
 }
