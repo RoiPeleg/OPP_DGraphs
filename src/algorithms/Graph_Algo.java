@@ -46,8 +46,18 @@ public class Graph_Algo implements graph_algorithms {
 
     @Override
     public boolean isConnected() {
-        // TODO Auto-generated method stub
-        return false;
+        ArrayList<node_data> nodes = (ArrayList<node_data>) this.graph.getV();
+        if (nodes.size() <= 1)
+            return true;
+        node_data src = nodes.get(0);
+        nodes.remove(0);
+        for (node_data n:nodes) {
+            double go = shortestPathDist(src.getKey(),n.getKey());
+            double back = shortestPathDist(n.getKey(),src.getKey());
+            if(go==Integer.MAX_VALUE||back==Integer.MAX_VALUE)
+                return false;
+        }
+        return true;
     }
 
     private int minDistance(double dist[], boolean used[]) {
@@ -79,51 +89,51 @@ public class Graph_Algo implements graph_algorithms {
         }
         dist[nodes.indexOf(graph.getNode(src))] = 0;
         for (int count = 0; count < V - 1; count++) {
-			int u = minDistance(dist, used); //index of u in the array
-			used[u] = true;
-			HashMap<Integer, edge_data> edges = ((Node) nodes.get(u)).getEdges();
-			for (Map.Entry<Integer, edge_data> edge : edges.entrySet()) {
-				int adjindex = nodes.indexOf(graph.getNode(edge.getValue().getDest()));
-				if (dist[u] + edge.getValue().getWeight() < dist[adjindex]) {
-					dist[adjindex] = dist[u] + edge.getValue().getWeight();
-				}
-			}
-		}
+            int u = minDistance(dist, used); //index of u in the array
+            used[u] = true;
+            HashMap<Integer, edge_data> edges = ((Node) nodes.get(u)).getEdges();
+            for (Map.Entry<Integer, edge_data> edge : edges.entrySet()) {
+                int adjindex = nodes.indexOf(graph.getNode(edge.getValue().getDest()));
+                if (dist[u] + edge.getValue().getWeight() < dist[adjindex]) {
+                    dist[adjindex] = dist[u] + edge.getValue().getWeight();
+                }
+            }
+        }
         return dist[nodes.indexOf(graph.getNode(dest))];
 
-}
+    }
 
     @Override
     public List<node_data> shortestPath(int src, int dest) {
-		PriorityQueue pq = new PriorityQueue<Node>();
-		int V = this.graph.nodeSize();
-		double dist[] = new double[V];
-		int N[] = new int[V];
-		boolean used[] = new boolean[V];
-		ArrayList<node_data> nodes = (ArrayList<node_data>) this.graph.getV();
-		//initiate values
-		for (int i = 0; i < V; i++) {
-			dist[i] = Integer.MAX_VALUE;
-			used[i] = false;
-			N[i] = -1;
-		}
-		dist[nodes.indexOf(graph.getNode(src))] = 0;
-		for (int count = 0; count < V - 1; count++) {
-			int u = minDistance(dist, used); //index of u in the array
-			used[u] = true;
-			HashMap<Integer, edge_data> edges = ((Node) nodes.get(u)).getEdges();
-			for (Map.Entry<Integer, edge_data> edge : edges.entrySet()) {
-				int adjindex = nodes.indexOf(graph.getNode(edge.getValue().getDest()));
-				if (dist[u] + edge.getValue().getWeight() < dist[adjindex]) {
-					dist[adjindex] = dist[u] + edge.getValue().getWeight();
-					N[adjindex] = u;
-				}
-			}
-		}
+        PriorityQueue pq = new PriorityQueue<Node>();
+        int V = this.graph.nodeSize();
+        double dist[] = new double[V];
+        int N[] = new int[V];
+        boolean used[] = new boolean[V];
+        ArrayList<node_data> nodes = (ArrayList<node_data>) this.graph.getV();
+        //initiate values
+        for (int i = 0; i < V; i++) {
+            dist[i] = Integer.MAX_VALUE;
+            used[i] = false;
+            N[i] = -1;
+        }
+        dist[nodes.indexOf(graph.getNode(src))] = 0;
+        for (int count = 0; count < V - 1; count++) {
+            int u = minDistance(dist, used); //index of u in the array
+            used[u] = true;
+            HashMap<Integer, edge_data> edges = ((Node) nodes.get(u)).getEdges();
+            for (Map.Entry<Integer, edge_data> edge : edges.entrySet()) {
+                int adjindex = nodes.indexOf(graph.getNode(edge.getValue().getDest()));
+                if (dist[u] + edge.getValue().getWeight() < dist[adjindex]) {
+                    dist[adjindex] = dist[u] + edge.getValue().getWeight();
+                    N[adjindex] = u;
+                }
+            }
+        }
 
-		List<node_data> list1 = new LinkedList<>();
-		int f = nodes.indexOf(graph.getNode(dest));
-        if(dist[f]!=Integer.MAX_VALUE) {
+        List<node_data> list1 = new LinkedList<>();
+        int f = nodes.indexOf(graph.getNode(dest));
+        if (dist[f] != Integer.MAX_VALUE) {
             while (N[f] != -1) {
                 list1.add(nodes.get(f));
                 f = N[f];
@@ -132,7 +142,7 @@ public class Graph_Algo implements graph_algorithms {
             list1.add(nodes.get(f));
 
             List<node_data> list2 = new LinkedList<>();
-            for (int i = list1.size()-1; i >=0; i--) {
+            for (int i = list1.size() - 1; i >= 0; i--) {
                 list2.add(list1.get(i));
             }
             for (node_data n : list2) {
@@ -142,7 +152,7 @@ public class Graph_Algo implements graph_algorithms {
             System.out.println(dist[nodes.indexOf(graph.getNode(dest))]);
             return list2;
         }
-        System.out.println("fuck you");
+        System.out.println("Path doesn't exist");
         return null;
     }
 

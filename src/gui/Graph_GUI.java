@@ -2,6 +2,11 @@ package gui;
 
 import algorithms.Graph_Algo;
 import dataStructure.*;
+import algorithms.Graph_Algo;
+import dataStructure.DGraph;
+import dataStructure.Node;
+import dataStructure.edge_data;
+import dataStructure.node_data;
 import utils.Point3D;
 import utils.Range;
 import utils.StdDraw;
@@ -136,7 +141,7 @@ public class Graph_GUI {
             node_data n= new Node(i,new Point3D(-100 + random.nextDouble()*100,-100 + random.nextDouble()*100),1 + random.nextDouble()*10);
             graph.addNode(n);
         }
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 13; i++) {
             int src =  random.nextInt(nodes);
             int dest =  random.nextInt(nodes);
             while (dest==src)
@@ -152,6 +157,8 @@ public class Graph_GUI {
         draw(graph);
         Graph_Algo ga = new Graph_Algo(graph);
         ga.shortestPath(1,5);
+        System.out.println(ga.isConnected());
+
     }
 
 }
