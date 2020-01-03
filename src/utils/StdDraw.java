@@ -28,7 +28,10 @@ package utils;
  ******************************************************************************/
 
 
-
+import algorithms.Graph_Algo;
+import dataStructure.DGraph;
+import dataStructure.Node;
+import dataStructure.node_data;
 import gui.Graph_GUI;
 
 import java.awt.BasicStroke;
@@ -67,9 +70,9 @@ import java.io.ObjectOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import java.util.LinkedList;
-import java.util.TreeSet;
-import java.util.NoSuchElementException;
+import java.sql.Time;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import javax.imageio.ImageIO;
 
 import javax.swing.ImageIcon;
@@ -626,14 +629,18 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
 	// mouse state
 	private static boolean isMousePressed = false;
-	private static double mouseX = 0;
-	private static double mouseY = 0;
+	private static double mouseX = Double.NEGATIVE_INFINITY;
+	private static double mouseY = Double.NEGATIVE_INFINITY;
 
 	// queue of typed key characters
 	private static LinkedList<Character> keysTyped = new LinkedList<Character>();
 
 	// set of key codes currently pressed down
 	private static TreeSet<Integer> keysDown = new TreeSet<Integer>();
+	private double clickedX, clickedY;
+	private String alg = "";
+	private Point3D psrc = null;
+	private Point3D pdest = null;
 
 	// singleton pattern: client can't instantiate
 	private StdDraw() { }
@@ -730,6 +737,9 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		menuItem2.addActionListener(std);
 		//menuItem2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		menu.add(menuItem2);
+		JMenuItem clear = new JMenuItem("Clear ");
+		clear.addActionListener(std);
+		menu.add(clear);
 		JMenu Algo = new JMenu("Algo");
 		menuBar.add(Algo);
 		JMenuItem menuItem3 = new JMenuItem("TSP");
@@ -1685,10 +1695,21 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			try {
 				Graph_GUI.load(filename);
 			}catch (Exception ex){ex.printStackTrace();}
+		} else if (e.getActionCommand().contains("TSP")) {
+			Graph_Algo ga = new Graph_Algo(Graph_GUI.getLastGraph());
+			ArrayList<Integer> targets = new ArrayList<>();
+			List<node_data> ls = ga.TSP(targets);
+			StdDraw.setPenColor(Color.green);
+			for (node_data n : ls) {
+				StdDraw.point(n.getLocation().x(), n.getLocation().y());
+			}
+		} else if (e.getActionCommand().contains("shortest path")) {
+			alg = "shortest path";
+		} else if (e.getActionCommand().contains("Clear")) {
+			StdDraw.clear();
+			Graph_GUI.draw(Graph_GUI.getLastGraph());
 		}
 	}
-
-
 
 	/***************************************************************************
 	 *  Mouse interactions.
@@ -1746,9 +1767,62 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// this body is intentionally left empty
+
+		if (e.getClickCount() == 2) {
+			if (alg.contains("shortest path")) {
+
+				if (psrc == null) {
+					psrc = new Point3D(userX(e.getX()), userY(e.getY()));
+					return;
+				}
+				if (pdest == null) {
+					pdest = new Point3D(userX(e.getX()), userY(e.getY()));
+					shortPath();
+					pdest = null;
+					psrc = null;
+					alg = "";
+					return;
+				}
+			}
+		}
 	}
 
+	private void shortPath() {
+		Graph_Algo ga = new Graph_Algo(Graph_GUI.getLastGraph());
+		node_data nd;
+		int src = 0, dest = 0;
+		Point3D sp = psrc;
+		node_data snode = null, dnode = null;
+		ArrayList<node_data> l = (ArrayList<node_data>) Graph_GUI.getLastGraph().getV();
+		for (node_data n : l) {
+			if (close(n.getLocation(), sp)) {
+				snode = n;
+			}
+		}
+		sp = pdest;
+		for (node_data n : l) {
+			if (close(n.getLocation(), sp)) {
+				dnode = n;
+			}
+		}
+		src = snode.getKey();
+		dest = dnode.getKey();
+		List<node_data> ls = ga.shortestPath(src, dest);
+		String w = "shortest distance is " + ga.shortestPathDist(src, dest) + "";
+		StdDraw.setPenColor(Color.green);
+		StdDraw.setPenRadius(0.01);
+		for (node_data n : ls) {
+			StdDraw.point(n.getLocation().x(), n.getLocation().y());
+		}
+		StdDraw.text(xmax, ymax, w);
+	}
+
+	private boolean close(Point3D p1, Point3D p2) {
+		double EPSILON = 0.5;
+		if (Math.abs(p1.x() - p2.x()) > EPSILON) return false;
+		if (Math.abs(p1.y() - p2.y()) > EPSILON) return false;
+		return true;
+	}
 	/**
 	 * This method cannot be called directly.
 	 */
