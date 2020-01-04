@@ -75,12 +75,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import javax.imageio.ImageIO;
 
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
+import javax.swing.*;
 
 /**
  *  The {@code StdDraw} class provides a basic capability for
@@ -1698,6 +1693,26 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		} else if (e.getActionCommand().contains("TSP")) {
 			Graph_Algo ga = new Graph_Algo(Graph_GUI.getLastGraph());
 			ArrayList<Integer> targets = new ArrayList<>();
+            JTextField jt = new JTextField("TSP locations", 1);
+            JButton b = new JButton("DONE");
+            b.setVisible(true);
+            jt.setVisible(true);
+            StdDraw.frame.add(jt);
+            StdDraw.frame.add(b);
+            b.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    String[] s = jt.getText().split(",");
+                    for (int i = 0; i < s.length; i++) {
+                        try {
+                            targets.add(Integer.parseInt(s[i]));
+                        } catch (Exception ex) {
+                            throw new RuntimeException("not number or not separated by comma");
+                        }
+                    }
+                }
+            });
+            StdDraw.frame.remove(b);
+            StdDraw.frame.remove(jt);
 			List<node_data> ls = ga.TSP(targets);
 			StdDraw.setPenColor(Color.green);
 			for (node_data n : ls) {
