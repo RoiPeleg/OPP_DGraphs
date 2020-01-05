@@ -17,9 +17,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
 
-public class Graph_GUI {
-    private static DGraph lastGraph;
-
+public class Graph_GUI implements Runnable {
+    private static graph lastGraph;
+    private static int mc = -1;
     /**
      * saves last graph to a given file
      * @param filename
@@ -49,8 +49,16 @@ public class Graph_GUI {
         streamIn.close();
         obj.close();
     }
+
+    public static graph getLastGraph() {
+        return lastGraph;
+    }
+
+    public static void setLastGraph(graph g) {
+        lastGraph = (DGraph) g;
+    }
     //auxiliary to find scale
-    private static void setScale(DGraph graph)
+    private static void setScale(graph graph)
     {
         Collection<node_data> c = graph.getV();
         Iterator<node_data> iterator = c.iterator();
@@ -91,11 +99,12 @@ public class Graph_GUI {
     }
     /**
      * draws given graph in GUI
-     * @param graph1
+     * @param graph
      */
-    public static void draw(graph graph1)
+    public static void draw(graph graph)
     {
-        DGraph graph = (DGraph)graph1;
+        //DGraph graph = (DGraph)graph1;
+        Graph_GUI.mc = lastGraph.getMC();
         StdDraw.setCanvasSize(600, 600);
         setScale(graph);
         Collection<node_data> c = graph.getV();
@@ -154,11 +163,33 @@ public class Graph_GUI {
         long endTime = System.nanoTime();
         double runtime =(double) endTime - startTime;
         System.out.println(runtime/1000000000.0);//takes about 1.5 seconds for 1000000 nodes and 10000000 edges
-        draw(graph);
-        Graph_Algo ga = new Graph_Algo(graph);
-        ga.shortestPath(1,5);
-        System.out.println(ga.isConnected());
+        Graph_GUI r = new Graph_GUI();
+        Graph_GUI.setLastGraph(graph);
+        Thread t1 = new Thread(r);
+        t1.start();
+        graph.addNode(new Node(100, new Point3D(0, 0), 0));
+        //Graph_Algo ga = new Graph_Algo(graph);
+        //ga.shortestPath(1,5);
+        //System.out.println(ga.isConnected());
 
     }
 
+    @Override
+    public void run() {
+        draw(lastGraph);
+        while (true) {
+            synchronized (lastGraph) {
+                if (mc < lastGraph.getMC()) {
+                    StdDraw.clear();
+                    draw(lastGraph);
+                } else {
+                    try {
+                        Thread.sleep(1500);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
 }

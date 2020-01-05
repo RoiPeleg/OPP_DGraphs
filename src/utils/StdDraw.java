@@ -31,18 +31,11 @@ package utils;
 import algorithms.Graph_Algo;
 import dataStructure.DGraph;
 import dataStructure.Node;
+import dataStructure.graph;
 import dataStructure.node_data;
 import gui.Graph_GUI;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.FileDialog;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.MediaTracker;
-import java.awt.RenderingHints;
+import java.awt.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -72,6 +65,7 @@ import java.net.URL;
 
 import java.sql.Time;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.imageio.ImageIO;
 
@@ -636,7 +630,6 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	private String alg = "";
 	private Point3D psrc = null;
 	private Point3D pdest = null;
-
 	// singleton pattern: client can't instantiate
 	private StdDraw() { }
 
@@ -735,6 +728,22 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		JMenuItem clear = new JMenuItem("Clear ");
 		clear.addActionListener(std);
 		menu.add(clear);
+		menu = new JMenu("Graph");
+		menuBar.add(menu);
+		JMenuItem addv = new JMenuItem("add vertex ");
+		addv.addActionListener(std);
+		menu.add(addv);
+		JMenuItem adde = new JMenuItem("add edge ");
+		adde.addActionListener(std);
+		menu.add(adde);
+		JMenuItem removev = new JMenuItem("remove vertex ");
+		removev.addActionListener(std);
+		menu.add(removev);
+		JMenuItem removee = new JMenuItem("remove edge ");
+		removee.addActionListener(std);
+		menu.add(removee);
+
+
 		JMenu Algo = new JMenu("Algo");
 		menuBar.add(Algo);
 		JMenuItem menuItem3 = new JMenuItem("TSP");
@@ -1692,37 +1701,52 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			}catch (Exception ex){ex.printStackTrace();}
 		} else if (e.getActionCommand().contains("TSP")) {
 			Graph_Algo ga = new Graph_Algo(Graph_GUI.getLastGraph());
+			String text = JOptionPane.showInputDialog("enter targets separate by comma");
+			String[] strings = text.split(",");
 			ArrayList<Integer> targets = new ArrayList<>();
-            JTextField jt = new JTextField("TSP locations", 1);
-            JButton b = new JButton("DONE");
-            b.setVisible(true);
-            jt.setVisible(true);
-            StdDraw.frame.add(jt);
-            StdDraw.frame.add(b);
-            b.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(ActionEvent event) {
-                    String[] s = jt.getText().split(",");
-                    for (int i = 0; i < s.length; i++) {
-                        try {
-                            targets.add(Integer.parseInt(s[i]));
-                        } catch (Exception ex) {
-                            throw new RuntimeException("not number or not separated by comma");
-                        }
-                    }
-                }
-            });
-            StdDraw.frame.remove(b);
-            StdDraw.frame.remove(jt);
+			for (String s : strings) {
+				targets.add(Integer.parseInt(s));
+			}
 			List<node_data> ls = ga.TSP(targets);
 			StdDraw.setPenColor(Color.green);
-			for (node_data n : ls) {
-				StdDraw.point(n.getLocation().x(), n.getLocation().y());
+			for (int i = 0; i < ls.size() - 1; i++) {
+				node_data n1 = ls.get(i);
+				node_data n2 = ls.get(i + 1);
+				StdDraw.line(n1.getLocation().x(), n1.getLocation().y(), n2.getLocation().x(), n2.getLocation().y());
 			}
 		} else if (e.getActionCommand().contains("shortest path")) {
 			alg = "shortest path";
 		} else if (e.getActionCommand().contains("Clear")) {
 			StdDraw.clear();
 			Graph_GUI.draw(Graph_GUI.getLastGraph());
+		} else if (e.getActionCommand().contains("add vertex")) {
+			alg = "add v";
+		} else if (e.getActionCommand().contains("add edge")) {
+			String text = JOptionPane.showInputDialog("enter source dest and weight");
+			String[] s = text.split("\\,");
+			if (s.length == 0 || s.length > 3) {
+				alg = "";
+				return;
+			}
+			int src = Integer.parseInt(s[0]);
+			int dest = Integer.parseInt(s[1]);
+			double w = Double.parseDouble(s[2]);
+			graph gr = Graph_GUI.getLastGraph();
+			node_data n1 = gr.getNode(src);
+			node_data n2 = gr.getNode(dest);
+			if (n1 == null || n2 == null) {
+				alg = "";
+				return;
+			}
+			gr.connect(src, dest, w);
+			Graph_GUI.draw(Graph_GUI.getLastGraph());
+		} else if (e.getActionCommand().contains("remove vertex")) {
+			String text = JOptionPane.showInputDialog("vertex to remove");
+			Graph_GUI.getLastGraph().removeNode(Integer.parseInt(text));
+		} else if (e.getActionCommand().contains("remove edge")) {
+			String text = JOptionPane.showInputDialog("edge to remove separate by comma");
+			String[] strings = text.split(",");
+			Graph_GUI.getLastGraph().removeEdge(Integer.parseInt(strings[0]), Integer.parseInt(strings[1]));
 		}
 	}
 
@@ -1798,6 +1822,12 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 					alg = "";
 					return;
 				}
+			} else if (alg.contains("add v")) {
+				Point3D p = new Point3D(userX(e.getX()), userY(e.getY()));
+				graph gr = Graph_GUI.getLastGraph();
+				gr.addNode((node_data) new Node(gr.nodeSize() + (int) Math.random() * (gr.nodeSize() + 100), p, 0));
+				Graph_GUI.draw(Graph_GUI.getLastGraph());
+				alg = "";
 			}
 		}
 	}
@@ -1820,22 +1850,32 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				dnode = n;
 			}
 		}
+		if (snode == null || dnode == null) return;
 		src = snode.getKey();
 		dest = dnode.getKey();
 		List<node_data> ls = ga.shortestPath(src, dest);
-		String w = "shortest distance is " + ga.shortestPathDist(src, dest) + "";
-		StdDraw.setPenColor(Color.green);
-		StdDraw.setPenRadius(0.01);
-		for (node_data n : ls) {
-			StdDraw.point(n.getLocation().x(), n.getLocation().y());
+		if (ls == null) {
+			StdDraw.text(xmax - 80, ymax - 10, "doesn't exist");
+			return;
 		}
-		StdDraw.text(xmax, ymax, w);
+		String w = "shortest distance is " + ga.shortestPathDist(src, dest);
+		StdDraw.setPenColor(Color.green);
+		for (int i = 0; i < ls.size() - 1; i++) {
+			node_data n1 = ls.get(i);
+			node_data n2 = ls.get(i + 1);
+			StdDraw.line(n1.getLocation().x(), n1.getLocation().y(), n2.getLocation().x(), n2.getLocation().y());
+		}
+		StdDraw.text(xmax - 80, ymax - 10, w);
 	}
 
 	private boolean close(Point3D p1, Point3D p2) {
-		double EPSILON = 0.5;
-		if (Math.abs(p1.x() - p2.x()) > EPSILON) return false;
-		if (Math.abs(p1.y() - p2.y()) > EPSILON) return false;
+		double EPSILONX = 10;
+		double EPSILONY = 10;
+		///System.out.println(EPSILONX + " " + EPSILONY);
+		//System.out.println("x: " + Math.abs(scaleX(p1.x()) - scaleX(p2.x())));
+		//System.out.println("y: "+Math.abs(scaleY(p1.y()) - scaleY(p2.y())));
+		if (Math.abs(p1.x() - p2.x()) > EPSILONX) return false;
+		if (Math.abs(p1.y() - p2.y()) > EPSILONY) return false;
 		return true;
 	}
 	/**
