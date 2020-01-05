@@ -42,6 +42,10 @@ public class DGraph implements graph, Serializable {
 
 	@Override
 	public void addNode(node_data n) {
+		if (hashMap.get(n.getKey()) != null) {
+			System.out.println("node already exist");
+			return;
+		}
         hashMap.put(n.getKey(),n);
         MC++;
 	}
