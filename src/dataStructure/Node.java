@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Node implements node_data, Serializable {
-    private static int numofEdges;
+    private int numofEdges;
     private int key;
     private Point3D p;
     private double weight;
@@ -22,7 +22,8 @@ public class Node implements node_data, Serializable {
         this.p = new Point3D(p);
         edgeMap =new HashMap<>();
     }
-    public static int getNumofEdges()
+
+    public int getNumofEdges()
     {
         return numofEdges;
     }

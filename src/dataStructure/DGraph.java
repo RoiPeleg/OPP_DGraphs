@@ -3,18 +3,17 @@ package dataStructure;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class DGraph implements graph, Serializable {
     private HashMap<Integer , node_data> hashMap;
     private int MC;
+	private int numberOfEdges;
     public DGraph()
     {
         hashMap = new HashMap<>();
         MC =0;
+		numberOfEdges = 0;
     }
 
 	public DGraph(DGraph dg)
@@ -27,6 +26,7 @@ public class DGraph implements graph, Serializable {
 		}
 		this.hashMap = copy;
 		this.MC = dg.MC;
+		this.numberOfEdges = dg.numberOfEdges;
 	}
 
 	@Override
@@ -46,6 +46,9 @@ public class DGraph implements graph, Serializable {
 			System.out.println("node already exist");
 			return;
 		}
+		if (n instanceof Node) {
+			numberOfEdges += ((Node) n).getNumofEdges();
+		}
         hashMap.put(n.getKey(),n);
         MC++;
 	}
@@ -55,6 +58,7 @@ public class DGraph implements graph, Serializable {
     	Edge e = new Edge(src,dest,w);
     	Node n = (Node)hashMap.get(src);
     	n.addEdge(e);
+		numberOfEdges++;
     	MC++;
 	}
 
@@ -81,6 +85,7 @@ public class DGraph implements graph, Serializable {
 	public edge_data removeEdge(int src, int dest) {
     	Node n = (Node)hashMap.get(src);
     	MC++;
+		numberOfEdges--;
 		return n.removeEdge(dest);
 	}
 
@@ -91,7 +96,7 @@ public class DGraph implements graph, Serializable {
 
 	@Override
 	public int edgeSize() {
-        return Node.getNumofEdges();
+		return numberOfEdges;
 	}
 
 	@Override
