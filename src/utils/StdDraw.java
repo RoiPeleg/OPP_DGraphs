@@ -1820,22 +1820,30 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				dnode = n;
 			}
 		}
-		if (snode == null || dnode == null) throw new RuntimeException("selected points aren't in the graph");
+		if (snode == null || dnode == null) return;
 		src = snode.getKey();
 		dest = dnode.getKey();
 		List<node_data> ls = ga.shortestPath(src, dest);
+		if (ls == null) {
+			StdDraw.text(xmax - 80, ymax - 10, "doesn't exist");
+			return;
+		}
 		String w = "shortest distance is " + ga.shortestPathDist(src, dest);
 		StdDraw.setPenColor(Color.green);
-		StdDraw.setPenRadius(0.01);
-		for (node_data n : ls) {
-			StdDraw.point(n.getLocation().x(), n.getLocation().y());
+		for (int i = 0; i < ls.size() - 1; i++) {
+			node_data n1 = ls.get(i);
+			node_data n2 = ls.get(i + 1);
+			StdDraw.line(n1.getLocation().x(), n1.getLocation().y(), n2.getLocation().x(), n2.getLocation().y());
 		}
-		StdDraw.text(xmax - 100, ymax - 100, w);
+		StdDraw.text(xmax - 80, ymax - 10, w);
 	}
 
 	private boolean close(Point3D p1, Point3D p2) {
-		double EPSILONX = scaleX(xmax);
-		double EPSILONY = scaleX(ymax);
+		double EPSILONX = 10;
+		double EPSILONY = 10;
+		///System.out.println(EPSILONX + " " + EPSILONY);
+		//System.out.println("x: " + Math.abs(scaleX(p1.x()) - scaleX(p2.x())));
+		//System.out.println("y: "+Math.abs(scaleY(p1.y()) - scaleY(p2.y())));
 		if (Math.abs(p1.x() - p2.x()) > EPSILONX) return false;
 		if (Math.abs(p1.y() - p2.y()) > EPSILONY) return false;
 		return true;

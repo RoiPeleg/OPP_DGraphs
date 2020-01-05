@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.Random;
 
 public class Graph_GUI implements Runnable {
-    private static DGraph lastGraph;
+    private static graph lastGraph;
     private static int mc = -1;
     /**
      * saves last graph to a given file
@@ -50,7 +50,7 @@ public class Graph_GUI implements Runnable {
         obj.close();
     }
 
-    public static DGraph getLastGraph() {
+    public static graph getLastGraph() {
         return lastGraph;
     }
 
@@ -58,7 +58,7 @@ public class Graph_GUI implements Runnable {
         lastGraph = (DGraph) g;
     }
     //auxiliary to find scale
-    private static void setScale(DGraph graph)
+    private static void setScale(graph graph)
     {
         Collection<node_data> c = graph.getV();
         Iterator<node_data> iterator = c.iterator();
@@ -99,11 +99,11 @@ public class Graph_GUI implements Runnable {
     }
     /**
      * draws given graph in GUI
-     * @param graph1
+     * @param graph
      */
-    public static void draw(graph graph1)
+    public static void draw(graph graph)
     {
-        DGraph graph = (DGraph)graph1;
+        //DGraph graph = (DGraph)graph1;
         Graph_GUI.mc = lastGraph.getMC();
         StdDraw.setCanvasSize(600, 600);
         setScale(graph);
