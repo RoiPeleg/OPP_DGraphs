@@ -19,7 +19,7 @@ import java.util.Random;
 
 public class Graph_GUI implements Runnable {
     private static DGraph lastGraph;
-
+    private static int mc = -1;
     /**
      * saves last graph to a given file
      * @param filename
@@ -52,6 +52,10 @@ public class Graph_GUI implements Runnable {
 
     public static DGraph getLastGraph() {
         return lastGraph;
+    }
+
+    public static void setLastGraph(graph g) {
+        lastGraph = (DGraph) g;
     }
     //auxiliary to find scale
     private static void setScale(DGraph graph)
@@ -100,6 +104,7 @@ public class Graph_GUI implements Runnable {
     public static void draw(graph graph1)
     {
         DGraph graph = (DGraph)graph1;
+        Graph_GUI.mc = lastGraph.getMC();
         StdDraw.setCanvasSize(600, 600);
         setScale(graph);
         Collection<node_data> c = graph.getV();
@@ -158,16 +163,20 @@ public class Graph_GUI implements Runnable {
         long endTime = System.nanoTime();
         double runtime =(double) endTime - startTime;
         System.out.println(runtime/1000000000.0);//takes about 1.5 seconds for 1000000 nodes and 10000000 edges
-        draw(graph);
-        Graph_Algo ga = new Graph_Algo(graph);
-        ga.shortestPath(1,5);
-        System.out.println(ga.isConnected());
+        Graph_GUI r = new Graph_GUI();
+        Graph_GUI.setLastGraph(graph);
+        Thread t1 = new Thread(r);
+        t1.start();
+        graph.addNode(new Node(100, new Point3D(0, 0), 0));
+        //Graph_Algo ga = new Graph_Algo(graph);
+        //ga.shortestPath(1,5);
+        //System.out.println(ga.isConnected());
 
     }
 
     @Override
     public void run() {
-        int mc = lastGraph.getMC();
+        draw(lastGraph);
         while (true) {
             synchronized (lastGraph) {
                 if (mc < lastGraph.getMC()) {

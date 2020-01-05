@@ -1820,22 +1820,24 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				dnode = n;
 			}
 		}
+		if (snode == null || dnode == null) throw new RuntimeException("selected points aren't in the graph");
 		src = snode.getKey();
 		dest = dnode.getKey();
 		List<node_data> ls = ga.shortestPath(src, dest);
-		String w = "shortest distance is " + ga.shortestPathDist(src, dest) + "";
+		String w = "shortest distance is " + ga.shortestPathDist(src, dest);
 		StdDraw.setPenColor(Color.green);
 		StdDraw.setPenRadius(0.01);
 		for (node_data n : ls) {
 			StdDraw.point(n.getLocation().x(), n.getLocation().y());
 		}
-		StdDraw.text(xmax, ymax, w);
+		StdDraw.text(xmax - 100, ymax - 100, w);
 	}
 
 	private boolean close(Point3D p1, Point3D p2) {
-		double EPSILON = 0.5;
-		if (Math.abs(p1.x() - p2.x()) > EPSILON) return false;
-		if (Math.abs(p1.y() - p2.y()) > EPSILON) return false;
+		double EPSILONX = scaleX(xmax);
+		double EPSILONY = scaleX(ymax);
+		if (Math.abs(p1.x() - p2.x()) > EPSILONX) return false;
+		if (Math.abs(p1.y() - p2.y()) > EPSILONY) return false;
 		return true;
 	}
 	/**
