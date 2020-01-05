@@ -1858,7 +1858,9 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			StdDraw.text(xmax - 80, ymax - 10, "doesn't exist");
 			return;
 		}
-		String w = "shortest distance is " + ga.shortestPathDist(src, dest);
+		double ww = ga.shortestPathDist(src, dest);
+		String w = "shortest distance is " + ww;
+		if (ww == Double.MAX_VALUE) w = " path doesn't exist";
 		StdDraw.setPenColor(Color.green);
 		for (int i = 0; i < ls.size() - 1; i++) {
 			node_data n1 = ls.get(i);

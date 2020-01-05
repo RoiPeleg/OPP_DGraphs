@@ -1,11 +1,13 @@
 package algorithms;
 
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.*;
 
 import dataStructure.*;
+import utils.StdDraw;
 
 /**
  * This empty class represents the set of graph-theory algorithms
@@ -17,31 +19,54 @@ import dataStructure.*;
 public class Graph_Algo implements graph_algorithms {
     private graph graph;
 
+    public Graph_Algo() {
+    }
+
     public Graph_Algo(graph g) {
         init(g);
     }
 
     @Override
     public void init(graph g) {
-        this.graph = new DGraph((DGraph) g);
+        this.graph = g;
     }
 
     @Override
     public graph copy() {
+        if (this.graph == null)
+            throw new RuntimeException("Graph_Algo not initiate");
         return new DGraph((DGraph) this.graph);
 
     }
 
     @Override
     public void init(String file_name) {
-        // TODO Auto-generated method stub
-
+        try {
+            FileInputStream streamIn = new FileInputStream(file_name);
+            ObjectInputStream obj = new ObjectInputStream(streamIn);
+            DGraph readCase = (DGraph) obj.readObject();
+            StdDraw.clear();
+            graph = readCase;
+            streamIn.close();
+            obj.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void save(String file_name) {
-        // TODO Auto-generated method stub
-
+        try {
+            FileOutputStream out = new FileOutputStream(file_name + ".ser");
+            ObjectOutputStream oos = new ObjectOutputStream(out);
+            if (graph == null) return;
+            oos.writeObject(graph);
+            oos.close();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ;
     }
 
     @Override
@@ -54,7 +79,7 @@ public class Graph_Algo implements graph_algorithms {
         for (node_data n : nodes) {
             double go = shortestPathDist(src.getKey(), n.getKey());
             double back = shortestPathDist(n.getKey(), src.getKey());
-            if (go == Integer.MAX_VALUE || back == Integer.MAX_VALUE)
+            if (go == Double.MAX_VALUE || back == Double.MAX_VALUE)
                 return false;
         }
         return true;
@@ -62,7 +87,7 @@ public class Graph_Algo implements graph_algorithms {
 
     private int minDistance(double dist[], boolean used[]) {
 
-        double min = Integer.MAX_VALUE;
+        double min = Double.MAX_VALUE;
         int min_index = -1;
         int V = this.graph.nodeSize();
         for (int v = 0; v < V; v++)
@@ -77,13 +102,16 @@ public class Graph_Algo implements graph_algorithms {
     @Override
     public double shortestPathDist(int src, int dest) {
         // TODO Auto-generated method stub
+        if (graph.getNode(src) == null || graph.getNode(dest) == null) {
+            throw new RuntimeException("One of The vertex is not exists");
+        }
         int V = this.graph.nodeSize();
         double dist[] = new double[V];
         boolean used[] = new boolean[V];
         ArrayList<node_data> nodes = (ArrayList<node_data>) this.graph.getV();
         //initiate values
         for (int i = 0; i < V; i++) {
-            dist[i] = Integer.MAX_VALUE;
+            dist[i] = Double.MAX_VALUE;
             used[i] = false;
         }
         dist[nodes.indexOf(graph.getNode(src))] = 0;
@@ -104,6 +132,9 @@ public class Graph_Algo implements graph_algorithms {
 
     @Override
     public List<node_data> shortestPath(int src, int dest) {
+        if (graph.getNode(src) == null || graph.getNode(dest) == null) {
+            throw new RuntimeException("One of The vertex is not exists");
+        }
         int V = this.graph.nodeSize();
         double dist[] = new double[V];
         int N[] = new int[V];
@@ -111,7 +142,7 @@ public class Graph_Algo implements graph_algorithms {
         ArrayList<node_data> nodes = (ArrayList<node_data>) this.graph.getV();
         //initiate values
         for (int i = 0; i < V; i++) {
-            dist[i] = Integer.MAX_VALUE;
+            dist[i] = Double.MAX_VALUE;
             used[i] = false;
             N[i] = -1;
         }
@@ -131,7 +162,7 @@ public class Graph_Algo implements graph_algorithms {
 
         List<node_data> list1 = new LinkedList<>();
         int f = nodes.indexOf(graph.getNode(dest));
-        if (dist[f] != Integer.MAX_VALUE) {
+        if (dist[f] != Double.MAX_VALUE) {
             while (N[f] != -1) {
                 list1.add(nodes.get(f));
                 f = N[f];
@@ -150,7 +181,7 @@ public class Graph_Algo implements graph_algorithms {
             System.out.println(dist[nodes.indexOf(graph.getNode(dest))]);*/
             return list2;
         }
-        return null;
+        return new LinkedList<>();
     }
 
     public static List<Integer> clone(List<Integer> source) {
@@ -166,7 +197,7 @@ public class Graph_Algo implements graph_algorithms {
         ArrayList<Integer> ALtargets = (ArrayList<Integer>) clone(targets);
         int first = -1, last = -1;
         List<node_data> finallist = new ArrayList<node_data>();
-        double min = Integer.MAX_VALUE;
+        double min = Double.MAX_VALUE;
         for (int src : targets) {
             int index = ALtargets.indexOf(new Integer(src));
             ALtargets.remove(new Integer(src));
@@ -182,11 +213,8 @@ public class Graph_Algo implements graph_algorithms {
             ALtargets.add(index, src);
         }
         if (first == -1 || last == -1 || targets.size() > finallist.size())
-            return null;
+            return new ArrayList<node_data>();
 
-        for (node_data n : finallist) {
-            System.out.print(n.getKey() + " ");
-        }
         return finallist;
     }
 
@@ -196,7 +224,7 @@ public class Graph_Algo implements graph_algorithms {
             double[] ans = {src, 0};
             return ans;
         }
-        double min = Integer.MAX_VALUE;
+        double min = Double.MAX_VALUE;
         int last = -1;
         for (int dest : rest) {
             List<Integer> temp = clone(rest);
@@ -204,27 +232,22 @@ public class Graph_Algo implements graph_algorithms {
             double dist = shortestPathDist(src, dest);
             double[] tsp = TSP(dest, temp, new ArrayList<node_data>());
             if (tsp[0] != -1 && tsp[1] + dist < min) {
-                min = dist;
+                min = tsp[1] + dist;
                 last = dest;
             }
         }
         if (last == -1) {
-            double[] ans = {-1, Integer.MAX_VALUE};
+            double[] ans = {-1, Double.MAX_VALUE};
             return ans;
         }
         rest.remove(new Integer(last));
 
 
         if (newl.size() != 0) {
-            if(rest.size()==0){
-                newl.add(graph.getNode(last));
-            }
-            else {
                 newl.remove(newl.size() - 1);
                 for (node_data n : shortestPath(src, last)) {
                     newl.add(n);
                 }
-            }
         }
         double[] ans = TSP(last, rest, newl);
         ans[1] += min;
