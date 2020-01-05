@@ -68,6 +68,8 @@ class Graph_AlgoTest {
 
     @Test
     public void testIsConnected() {
+        g = new DGraph();
+        ga = new Graph_Algo();
         Point3D[] pp = {new Point3D(-20, 20, 1), new Point3D(-23, -15, 6), new Point3D(-10, 9, 2), new Point3D(31, -5, 1), new Point3D(11, 22, 21), new Point3D(0, -7, 5)};
         for (int i = 0; i < 6; i++) {
             node_data a = new Node(i, pp[i], 0);
@@ -84,7 +86,6 @@ class Graph_AlgoTest {
         g.connect(3, 5, 6);
         g.connect(5, 1, 5);
         ga.init(g);
-        Graph_GUI.draw(g);
         assertTrue(ga.isConnected());
         g.removeEdge(0, 1);
         assertTrue(ga.isConnected());
@@ -94,6 +95,8 @@ class Graph_AlgoTest {
 
     @Test
     public void testShortestPathDist() {
+        g = new DGraph();
+        ga = new Graph_Algo();
         Point3D[] pp = {new Point3D(-20, 20, 1), new Point3D(-23, -15, 6), new Point3D(-10, 9, 2),
                 new Point3D(31, -5, 1), new Point3D(11, 22, 21), new Point3D(0, -7, 5),
                 new Point3D(20, 20, -9), new Point3D(30, 10, -1)};
@@ -122,6 +125,7 @@ class Graph_AlgoTest {
         assertEquals(Double.MAX_VALUE, ga.shortestPathDist(0, 3), 10);
         g.connect(0, 1, 2);
         g.connect(0, 3, 12);
+        Graph_GUI.draw(g);
         assertEquals(16, ga.shortestPathDist(3, 4), 0.01);
         assertEquals(11, ga.shortestPathDist(7, 4), 0.01);
         assertEquals(0, ga.shortestPathDist(5, 5), 0.01);
@@ -131,6 +135,8 @@ class Graph_AlgoTest {
     @Test
     public void testShortestPath() {
 
+        g = new DGraph();
+        ga = new Graph_Algo();
         Point3D[] pp = {new Point3D(-20, 20, 1), new Point3D(-23, -15, 6), new Point3D(-10, 9, 2),
                 new Point3D(31, -5, 1), new Point3D(11, 22, 21), new Point3D(0, -7, 5),
                 new Point3D(20, 20, -9), new Point3D(30, 10, -1)};
@@ -180,7 +186,6 @@ class Graph_AlgoTest {
 
         g.removeEdge(7, 5);
         g.removeEdge(3, 5);
-        Graph_GUI.draw(g);
         actualnode = ga.shortestPath(1, 5);
         for (int i = 0; i < actualnode.size(); i++) {
             actual.add(actualnode.get(i).getKey());
@@ -193,6 +198,8 @@ class Graph_AlgoTest {
 
     @Test
     public void testTSP() {
+        g = new DGraph();
+        ga = new Graph_Algo();
         Point3D[] pp = {new Point3D(-20, 20, 1), new Point3D(-23, -15, 6), new Point3D(-10, 9, 2),
                 new Point3D(31, -5, 1), new Point3D(11, 22, 21), new Point3D(0, -7, 5),
                 new Point3D(20, 20, -9), new Point3D(30, 10, -1)};
@@ -314,6 +321,8 @@ class Graph_AlgoTest {
 
     @Test
     public void testCopy() {
+        g = new DGraph();
+        ga = new Graph_Algo();
         Point3D[] pp = {new Point3D(-20, 20, 1), new Point3D(-23, -15, 6), new Point3D(-10, 9, 2),
                 new Point3D(31, -5, 1), new Point3D(11, 22, 21), new Point3D(0, -7, 5),
                 new Point3D(20, 20, -9), new Point3D(30, 10, -1)};

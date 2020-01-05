@@ -104,7 +104,7 @@ public class Graph_GUI implements Runnable {
     public static void draw(graph graph)
     {
         //DGraph graph = (DGraph)graph1;
-        Graph_GUI.mc = lastGraph.getMC();
+        Graph_GUI.mc = graph.getMC();
         StdDraw.setCanvasSize(600, 600);
         setScale(graph);
         Collection<node_data> c = graph.getV();
