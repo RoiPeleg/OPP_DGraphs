@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
 
-public class Graph_GUI implements Runnable {
+public class Graph_GUI {
     private static DGraph lastGraph;
 
     /**
@@ -48,10 +48,6 @@ public class Graph_GUI implements Runnable {
         lastGraph = readCase;
         streamIn.close();
         obj.close();
-    }
-
-    public static DGraph getLastGraph() {
-        return lastGraph;
     }
     //auxiliary to find scale
     private static void setScale(DGraph graph)
@@ -165,22 +161,4 @@ public class Graph_GUI implements Runnable {
 
     }
 
-    @Override
-    public void run() {
-        int mc = lastGraph.getMC();
-        while (true) {
-            synchronized (lastGraph) {
-                if (mc < lastGraph.getMC()) {
-                    StdDraw.clear();
-                    draw(lastGraph);
-                } else {
-                    try {
-                        Thread.sleep(1500);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-    }
 }

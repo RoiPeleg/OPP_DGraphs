@@ -51,10 +51,10 @@ public class Graph_Algo implements graph_algorithms {
             return true;
         node_data src = nodes.get(0);
         nodes.remove(0);
-        for (node_data n:nodes) {
-            double go = shortestPathDist(src.getKey(),n.getKey());
-            double back = shortestPathDist(n.getKey(),src.getKey());
-            if(go==Integer.MAX_VALUE||back==Integer.MAX_VALUE)
+        for (node_data n : nodes) {
+            double go = shortestPathDist(src.getKey(), n.getKey());
+            double back = shortestPathDist(n.getKey(), src.getKey());
+            if (go == Integer.MAX_VALUE || back == Integer.MAX_VALUE)
                 return false;
         }
         return true;
@@ -77,7 +77,6 @@ public class Graph_Algo implements graph_algorithms {
     @Override
     public double shortestPathDist(int src, int dest) {
         // TODO Auto-generated method stub
-        PriorityQueue pq = new PriorityQueue<Node>();
         int V = this.graph.nodeSize();
         double dist[] = new double[V];
         boolean used[] = new boolean[V];
@@ -105,7 +104,6 @@ public class Graph_Algo implements graph_algorithms {
 
     @Override
     public List<node_data> shortestPath(int src, int dest) {
-        PriorityQueue pq = new PriorityQueue<Node>();
         int V = this.graph.nodeSize();
         double dist[] = new double[V];
         int N[] = new int[V];
@@ -145,20 +143,92 @@ public class Graph_Algo implements graph_algorithms {
             for (int i = list1.size() - 1; i >= 0; i--) {
                 list2.add(list1.get(i));
             }
-            for (node_data n : list2) {
+          /* for (node_data n : list2) {
                 System.out.print(n.getKey() + " ");
             }
             System.out.println();
-            System.out.println(dist[nodes.indexOf(graph.getNode(dest))]);
+            System.out.println(dist[nodes.indexOf(graph.getNode(dest))]);*/
             return list2;
         }
-        System.out.println("Path doesn't exist");
         return null;
+    }
+
+    public static List<Integer> clone(List<Integer> source) {
+        List<Integer> newList = new ArrayList<>();
+        for (Integer intObj : source) {
+            newList.add(intObj);
+        }
+        return newList;
     }
 
     @Override
     public List<node_data> TSP(List<Integer> targets) {
-        // TODO Auto-generated method stub
-        return null;
+        ArrayList<Integer> ALtargets = (ArrayList<Integer>) clone(targets);
+        int first = -1, last = -1;
+        List<node_data> finallist = new ArrayList<node_data>();
+        double min = Integer.MAX_VALUE;
+        for (int src : targets) {
+            int index = ALtargets.indexOf(new Integer(src));
+            ALtargets.remove(new Integer(src));
+            List<node_data> newl = new ArrayList<node_data>();
+            newl.add(graph.getNode(src));
+            double[] tsp = TSP(src, ALtargets, newl);
+            if (tsp[1] < min) {
+                finallist = newl;
+                first = src;
+                last = (int) tsp[0];
+                min = tsp[1];
+            }
+            ALtargets.add(index, src);
+        }
+        if (first == -1 || last == -1 || targets.size() > finallist.size())
+            return null;
+
+        for (node_data n : finallist) {
+            System.out.print(n.getKey() + " ");
+        }
+        return finallist;
+    }
+
+    public double[] TSP(int src, List<Integer> rest, List<node_data> newl) {
+        rest = clone(rest);
+        if (rest.size() == 0) {
+            double[] ans = {src, 0};
+            return ans;
+        }
+        double min = Integer.MAX_VALUE;
+        int last = -1;
+        for (int dest : rest) {
+            List<Integer> temp = clone(rest);
+            temp.remove(new Integer(dest));
+            double dist = shortestPathDist(src, dest);
+            double[] tsp = TSP(dest, temp, new ArrayList<node_data>());
+            if (tsp[0] != -1 && tsp[1] + dist < min) {
+                min = dist;
+                last = dest;
+            }
+        }
+        if (last == -1) {
+            double[] ans = {-1, Integer.MAX_VALUE};
+            return ans;
+        }
+        rest.remove(new Integer(last));
+
+
+        if (newl.size() != 0) {
+            if(rest.size()==0){
+                newl.add(graph.getNode(last));
+            }
+            else {
+                newl.remove(newl.size() - 1);
+                for (node_data n : shortestPath(src, last)) {
+                    newl.add(n);
+                }
+            }
+        }
+        double[] ans = TSP(last, rest, newl);
+        ans[1] += min;
+        return ans;
+
     }
 }
