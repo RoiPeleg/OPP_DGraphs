@@ -1,10 +1,6 @@
 
 package Tests;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.jupiter.api.Test;
 import algorithms.Graph_Algo;
 import dataStructure.*;
@@ -27,21 +23,6 @@ class Graph_AlgoTest {
     static graph g = new DGraph();
     static Graph_Algo ga = new Graph_Algo();
 
-
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
-
-    @Before
-    public void setUp() throws Exception {
-
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
-    }
-
     @Test
     public void testInitGraph() {
         ga.init(g);
@@ -50,8 +31,8 @@ class Graph_AlgoTest {
     @Test
     public void testInitString() {
         try {
-            ga.save("graph.txt");
-            ga.init("graph.txt");
+            ga.save("graph");
+            ga.init("graph.ser");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -60,7 +41,7 @@ class Graph_AlgoTest {
     @Test
     public void testSave() {
         try {
-            ga.save("graph.txt");
+            ga.save("graph");
         } catch (Exception e) {
             e.printStackTrace();
         }
