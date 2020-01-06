@@ -40,7 +40,7 @@ class Ex2Test {
 
     @Test
     void testConnectivity() {
-        //_alg = new Graph_Algo(_graph);
+        _alg = new Graph_Algo(_graph);
         boolean con = _alg.isConnected();
         if(!con) {
             Assertions.fail("shoulbe be connected");
@@ -57,7 +57,10 @@ class Ex2Test {
         return ans;
     }
     boolean drawGraph(graph g) {
-        Graph_GUI.draw(g);
+        Graph_GUI r = new Graph_GUI();
+        Graph_GUI.setLastGraph(g);
+        Thread t1 = new Thread(r);
+        t1.start();
         return true;
     }
 

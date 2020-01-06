@@ -1714,7 +1714,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				node_data n2 = ls.get(i + 1);
 				StdDraw.line(n1.getLocation().x(), n1.getLocation().y(), n2.getLocation().x(), n2.getLocation().y());
 			}
-		} else if (e.getActionCommand().contains("shortest path")) {
+		} else if (e.getActionCommand().contains("shortest path")) {//double click on desired  nodes
 			alg = "shortest path";
 		} else if (e.getActionCommand().contains("Clear")) {
 			StdDraw.clear();
